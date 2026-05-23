@@ -8,7 +8,8 @@ TEXTS = {
         "error_send": "Хатогӣ ҳангоми фиристодани файл ба Телеграм. 😔",
         "ready": "Медиаи шумо омода шуд! ✨",
         "lang_changed": "Забон бо муваффақият ба тоҷикӣ иваз шуд! 🇹🇯",
-        "choose_lang": "Лутфан забонро интихоб кунед / Пожалуйста, выберите язык / Please choose a language:"
+        "choose_lang": "Лутфан забонро интихоб кунед / Пожалуйста, выберите язык / Please choose a language:",
+        "invalid_link": "❌ Линки нодуруст! Лутфан танҳо линки тозаи Pinterest-ро бидуни матнҳои иловагӣ биристед."
     },
     "ru": {
         "welcome": "Привет, {name}! 👋\n\n✨ Я продвинутый бот для скачивания медиа из **Pinterest**.\n\n📥 **Как использовать?**\nПросто отправьте мне ссылку на видео или фото из Pinterest, и я скачаю его для вас за несколько секунд!",
@@ -19,7 +20,8 @@ TEXTS = {
         "error_send": "Ошибка при отправке файла в Telegram. 😔",
         "ready": "Ваше медиа готово! ✨",
         "lang_changed": "Язык успешно изменен на русский! 🇷🇺",
-        "choose_lang": "Пожалуйста, выберите язык / Пожалуйста, выберите язык / Please choose a language:"
+        "choose_lang": "Пожалуйста, выберите язык / Пожалуйста, выберите язык / Please choose a language:",
+        "invalid_link": "❌ Неверная ссылка! Пожалуйста, отправьте только чистую ссылку Pinterest без лишнего текста."
     },
     "en": {
         "welcome": "Hello, {name}! 👋\n\n✨ I am an advanced downloader bot for **Pinterest**.\n\n📥 **How to use?**\nJust send me a video or photo link from Pinterest, and I will download it for you in a few seconds!",
@@ -30,6 +32,7 @@ TEXTS = {
         "error_send": "Error sending file to Telegram. 😔",
         "ready": "Your media is ready! ✨",
         "lang_changed": "Language successfully changed to English! 🇬🇧",
-        "choose_lang": "Лутфан забонро интихоб кунед / Пожалуйста, выберите язык / Please choose a language:"
+        "choose_lang": "Лутфан забонро интихоб кунед / Пожалуйста, выберите язык / Please choose a language:",
+        "invalid_link": "❌ Invalid link! Please send only a clean Pinterest link without any extra text."
     }
 }

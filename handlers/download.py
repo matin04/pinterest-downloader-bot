@@ -4,28 +4,36 @@ from aiogram import Router, types, F
 from services.pinterest import get_pinterest_media
 from database.db import get_user_language
 from utils.languages import TEXTS
-from aiogram.types import FSInputFile  # Барои фиристодани файлҳо аз сервер
+from aiogram.types import FSInputFile
 
 router = Router()
 
+# 1. Хендлер дилхоҳ паёмеро, ки калимаҳои Pinterest дорад, дастгир мекунад
 @router.message(F.text.contains("pinterest.com") | F.text.contains("pin.it"))
 async def handle_pinterest_link(message: types.Message):
     url = message.text.strip()
     
-    # 1. Гирифтани забони корбар
+    # 2. Гирифтани забони корбар
     user_lang = await get_user_language(message.from_user.id)
     lang_texts = TEXTS[user_lang]
-    
+
+    # 3. ТЕКШИРУВИ ТОЗАГИИ ЛИНК:
+    # Агар дар дохили паём пробел (space) бошад, ин маънои онро дорад, ки
+    # корбар ба ғайр аз линк боз калимаҳои дигар навиштааст.
+    if " " in url:
+        await message.reply(lang_texts["invalid_link"])
+        return # Корро ҳамин ҷо қатъ мекунем!
+
     status_message = await message.answer(lang_texts["wait"])
     
-    # 2. Гирифтани линки мустақим аз Pinterest
+    # 4. Фиристодани линки тоза ба парсер
     media = await get_pinterest_media(url)
     
     if not media:
         await status_message.edit_text(lang_texts["error_find"])
         return
 
-    # Номи файлҳои вақтинчагӣ дар сервер
+    # Номи файлҳои вақтинчагӣ
     file_path = f"temp_{message.from_user.id}_{media['type']}"
     if media["type"] == "video":
         file_path += ".mp4"
@@ -33,19 +41,19 @@ async def handle_pinterest_link(message: types.Message):
         file_path += ".jpg"
 
     try:
-        # 3. Боргирии файл аз интернет ба сервери мо (Вақтинча)
+        # 5. Боргирии файл ба сервер
         async with httpx.AsyncClient() as client:
             response = await client.get(media["url"], timeout=60.0)
             if response.status_code == 200:
                 with open(file_path, "wb") as f:
                     f.write(response.content)
             else:
-                raise Exception("Боргирии файл аз Pinterest нобарор шуд")
+                raise Exception("Боргирии файл нобарор шуд")
 
-        # 4. Сохтани объекти файл барои Телеграм
+        # 6. Сохтани объекти файл
         telegram_file = FSInputFile(file_path)
 
-        # 5. Фиристодани файл ба корбар
+        # 7. Фиристодани файл
         if media["type"] == "video":
             await message.reply_video(video=telegram_file, caption=lang_texts["ready"])
         elif media["type"] == "image":
@@ -55,14 +63,13 @@ async def handle_pinterest_link(message: types.Message):
         
     except Exception as e:
         await status_message.edit_text(lang_texts["error_send"])
-        print(f"Хатогӣ ҳангоми кор бо файл: {e}")
+        print(f"Хатогӣ: {e}")
         
     finally:
-        # 6. АВТОМАТСОЗИИ ТОЗАКУНИИ КЭШ (МАҲЗ ҲАМИН ҶО!) ✅
-        # Блоки finally 100% иҷро мешавад, ҳатто агар хатогӣ шуда бошад ҳам!
+        # 8. Тоза кардани кэш
         if os.path.exists(file_path):
             try:
                 os.remove(file_path)
-                print(f"🔥 Кэш тоза шуд: Файли вақтинчагии {file_path} аз сервер нест карда шуд!")
+                print(f"🔥 Кэш тоза шуд: {file_path}")
             except Exception as e:
-                print(f"Хатогӣ ҳангоми тоза кардани кэш: {e}")
+                print(f"Хатогии кэш: {e}")
